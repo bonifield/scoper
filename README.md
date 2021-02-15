@@ -14,11 +14,11 @@ with open(sys.argv[1], "r") as conf:
 	c = json.load(conf)
 conf.close()
 ```
-- provide a Python list "inputUrls" consisting of URLs, and only retrieve "INSIDE-SCOPE"
+- ScoperList: bulk-process a provided Python list "inputUrls" consisting only of URLs, which only retrieves "INSIDE-SCOPE"
 ```
-s = ScoperList(c, inputUrls)
+s = ScoperList(c, inputUrls) # note "c" is the config loaded above
 s.check()
-print(s.output)
+print(s.output) # list object
 # generator, plain strings
 for x in s.gen():
 	print(x)
@@ -26,18 +26,18 @@ for x in s.gen():
 for x in s.colors():
 	print(x)
 ```
-- check a single URL for "INSIDE-SCOPE" or "OUTSIDE-SCOPE" status
+- ScoperSingle: check a single URL for "INSIDE-SCOPE" or "OUTSIDE-SCOPE" status
 ```
-ss = ScoperSingle(c, "http://test.google.com/admin/stuff")
+ss = ScoperSingle(c, "http://test.google.com/admin/stuff") # note "c" is the config loaded above
 ss.check()
-print(ss.output)
-print(ss.colors())
+print(ss.output) # single plaintext string
+print(ss.colors()) # single colorized string
 ```
-- loop over a Python list "inputUrls" and process them one at a time for either INSIDE-SCOPE or OUTSIDE-SCOPE status
+- ScoperSingle: loop over a Python list "inputUrls" and process them one at a time for either INSIDE-SCOPE or OUTSIDE-SCOPE status
 ```
 for i in inputUrls:
-	sss = ScoperSingle(c, i)
+	sss = ScoperSingle(c, i) # note "c" is the config loaded above
 	sss.check()
-	print(sss.output)
-	print(sss.colors())
+	print(sss.output) # single plaintext string
+	print(sss.colors()) # single colorized string
 ```
