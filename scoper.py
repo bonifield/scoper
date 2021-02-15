@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 # last updated: 2021-02-13
 
 import re
