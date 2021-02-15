@@ -14,7 +14,7 @@ with open(sys.argv[1], "r") as conf:
 	c = json.load(conf)
 conf.close()
 ```
-- ScoperList: bulk-process a provided Python list "inputUrls" consisting only of URLs, which only retrieves "INSIDE-SCOPE"
+- ScoperList: bulk-process a provided Python list "inputUrls" consisting of URLs, which only retrieves "INSIDE-SCOPE"
 ```
 s = ScoperList(c, inputUrls) # note "c" is the config loaded above
 s.check()
