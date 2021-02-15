@@ -1,7 +1,10 @@
 # scoper
 test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine scope
 
-## examples
+## example output
+![scoper-output-colorized.png](https://github.com/bonifield/scoper/raw/main/scoper-output-colorized.PNG)
+
+## usage
 - example script
 ```
 test-scoper-examples.py -c test-burp-config.json
