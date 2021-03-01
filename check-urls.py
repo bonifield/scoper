@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 # example usage:
-#	check-url.py -c burp-config.conf -u urls.txt -m [single|list]
+#	check-url.py -c burp-config.conf -u urls.json -m [single|list]
 
 import argparse, json, sys
 from scoper import ScoperList, ScoperSingle
