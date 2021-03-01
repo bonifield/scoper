@@ -8,7 +8,7 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 ![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/scoper-output-json.PNG)
 
 ## usage
-- check-url.py - quickly parse an input file containing JSON lines against a Burp-style configuration file
+- check-url.py - quickly parse an input file containing JSON lines (from Amass, Subfinder, custom tooling, etc) against a Burp-style configuration file
 ```
 check-url.py -c burp-config.conf -u urls.json -m [single|list]
 ```
