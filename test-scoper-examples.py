@@ -66,6 +66,9 @@ for x in s.gen():
 print("GENERATOR WITH COLOR: colors()")
 for x in s.colors():
 	print(x)
+print("JSON: json()")
+for x in s.json():
+	print(x)
 print("/"*100)
 
 
@@ -75,6 +78,7 @@ ss = ScoperSingle(c, "http://test.google.com/admin/stuff")
 ss.check()
 print(ss.output)
 print(ss.colors())
+print(ss.json())
 print("/"*100)
 
 
@@ -84,6 +88,7 @@ ss = ScoperSingle(c, "https://test.yahoo.com")
 ss.check()
 print(ss.output)
 print(ss.colors())
+print(ss.json())
 print("/"*100)
 
 
@@ -93,6 +98,7 @@ ss = ScoperSingle(c, "https://test.yahoo.com/administrator/stuff")
 ss.check()
 print(ss.output)
 print(ss.colors())
+print(ss.json())
 print("/"*100)
 
 
@@ -102,6 +108,7 @@ ss = ScoperSingle(c, "https://off-limits.yahoo.com")
 ss.check()
 print(ss.output)
 print(ss.colors())
+print(ss.json())
 print("/"*100)
 
 
@@ -113,4 +120,5 @@ for i in inputUrls:
 	sss.check()
 	print(sss.output)
 	print(sss.colors())
+	print(sss.json())
 print("/"*100)
