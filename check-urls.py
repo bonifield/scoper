@@ -39,6 +39,8 @@ if mode == "single":
 				s = ScoperSingle(c, h)
 				s.check()
 				print(s.colors())
+#				print(s.output())
+#				print(s.colors())
 		#sys.stderr.write("parsed "+str(counter)+" items\n")
 	f.close()
 elif mode == "list":
