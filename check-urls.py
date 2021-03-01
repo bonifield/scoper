@@ -10,17 +10,17 @@ parser = argparse.ArgumentParser(description="provide a Burp config and a file o
 req = parser.add_argument_group("required arguments")
 req.add_argument("-c", "--config", dest="config", type=str, help="path to a Burp configuration file", required=True)
 req.add_argument("-u", "--urlfile", dest="url", type=str, help="path to a file containing URLs to check", required=True)
-req.add_argument("-m", "--mode", dest="mode", type=str, help="mode: [single|list]", required=True)
+req.add_argument("-p", "--process", dest="mode", type=str, help="processing mode: [single|list]", required=True)
 args = vars(parser.parse_args())
 configFile = args["config"]
 urlFile = args["url"]
-mode = args["mode"]
+process = args["process"]
 
 with open(configFile, "r") as conf:
         c = json.load(conf)
 conf.close()
 
-if mode == "single":
+if process == "single":
 	# CHECK USING SINGLE, READS ONE LINE OF URL FILE AT A TIME
 	with open(urlFile, "r") as f:
 		counter = 0
@@ -43,7 +43,7 @@ if mode == "single":
 #				print(s.colors())
 		#sys.stderr.write("parsed "+str(counter)+" items\n")
 	f.close()
-elif mode == "list":
+elif process == "list":
 	# CHECK USING LIST, READS ENTIRE URL FILE INTO MEMORY
 	with open(urlFile, "r") as f:
 		counter = 0
@@ -68,5 +68,5 @@ elif mode == "list":
 		#sys.stderr.write("parsed "+str(counter)+" items\n")
 	f.close()
 else:
-	print('specify "-m single" or "-m list"')
+	print('specify "-p single" or "-p list"')
 	sys.exit(1)
