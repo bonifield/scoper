@@ -3,6 +3,7 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 
 ## example output
 ![scoper-output-colorized.png](https://github.com/bonifield/scoper/raw/main/scoper-output-colorized.PNG)
+![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/scoper-output-json.PNG)
 
 ## usage
 - example script
@@ -17,7 +18,7 @@ with open(sys.argv[1], "r") as conf:
 	c = json.load(conf)
 conf.close()
 ```
-- ScoperList: bulk-process a provided Python list "inputUrls" consisting of URLs, which only retrieves "INSIDE-SCOPE"
+- ScoperList: bulk-process a provided Python list "inputUrls" consisting of URLs, which only retrieves "inside-scope"
 ```
 s = ScoperList(c, inputUrls) # note "c" is the config loaded above
 s.check()
@@ -28,19 +29,24 @@ for x in s.gen():
 # generator, colorized strings for on-screen viewing
 for x in s.colors():
 	print(x)
+# generator, JSON strings for on-screen viewing
+for x in s.json():
+	print(x)
 ```
-- ScoperSingle: check a single URL for "INSIDE-SCOPE" or "OUTSIDE-SCOPE" status
+- ScoperSingle: check a single URL for "inside-scope" or "ouside-scope" status
 ```
 ss = ScoperSingle(c, "http://test.google.com/admin/stuff") # note "c" is the config loaded above
 ss.check()
 print(ss.output) # single plaintext string
 print(ss.colors()) # single colorized string
+print(ss.json()) # single JSON string
 ```
-- ScoperSingle: loop over a Python list "inputUrls" and process them one at a time for either INSIDE-SCOPE or OUTSIDE-SCOPE status
+- ScoperSingle: loop over a Python list "inputUrls" and process them one at a time for either "inside-scope" or "ouside-scope" status
 ```
 for i in inputUrls:
 	sss = ScoperSingle(c, i) # note "c" is the config loaded above
 	sss.check()
 	print(sss.output) # single plaintext string
 	print(sss.colors()) # single colorized string
+	print(ss.json()) # single JSON string
 ```
