@@ -1,4 +1,4 @@
-# last updated: 2021-02-13
+# last updated: 2021-03-01
 
 import re
 from urllib.parse import urlparse
@@ -71,10 +71,15 @@ class ScoperList:
 	def colors(self):
 		'''colors(): a generator object for the results list that yields the result with colorized strings'''
 		for i in self.output:
-			yield(tcol.GREEN+"INSIDE-SCOPE"+tcol.RESET+"\t"+i)
+			yield(tcol.GREEN+"inside-scope"+tcol.RESET+"\t"+i)
+
+	def json(self):
+		'''json(): a generator object for the results list that yields the result in JSON'''
+		for i in self.output:
+			yield({"scope":"inside", "host":i})
 
 	def __repr__(self):
-		'''__repr__(): prints the results list, one item per line (newline-delimited)'''
+		'''__repr__(): returns the results list, one item per line (newline-delimited)'''
 		o = self.check()
 		self.output = o
 		return("\n".join(o))
@@ -129,23 +134,31 @@ class ScoperSingle:
 		if len(i) > 0:
 			e = self.processExcludes(self.conf, i)
 			if i != e:
-				self.output = "INSIDE-SCOPE\t"+i
+				self.output = "inside-scope\t"+i
 			else:
-				self.output = "OUTSIDE-SCOPE\t"+i
+				self.output = "outside-scope\t"+i
 			return(self.output)
 		else:
-			self.output = "OUTSIDE-SCOPE\t"+self.inputUrl
+			self.output = "outside-scope\t"+self.inputUrl
 		return(self.output)
 
 	def colors(self):
-		'''colors(): prints the result with colorized output'''
+		'''colors(): returns the result with colorized output'''
 		cc = self.output.split()
-		if "INSIDE" in self.output:
+		if "inside" in self.output:
 			return(tcol.GREEN+cc[0]+tcol.RESET+"\t"+cc[1])
-		elif "OUTSIDE" in self.output:
+		elif "outside" in self.output:
 			return(tcol.RED+cc[0]+tcol.RESET+"\t"+cc[1])
 
+	def json(self):
+		'''colors(): returns the result in JSON'''
+		cc = self.output.split()
+		if "inside" in cc[0]:
+			return({"scope":"inside", "host":cc[1]})
+		elif "outside" in cc[0]:
+			return({"scope":"outside", "host":cc[1]})
+
 	def __repr__(self):
-		'''__repr__(): prints the result'''
+		'''__repr__(): returns the result'''
 		self.check()
 		return(self.output)
