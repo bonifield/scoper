@@ -2,9 +2,9 @@
 test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine scope
 
 ## example output
-- colorized terminal output
+- colorized terminal output\
 ![scoper-output-colorized.png](https://github.com/bonifield/scoper/raw/main/scoper-output-colorized.PNG)
-- JSON output
+- JSON output\
 ![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/scoper-output-json.PNG)
 
 ## usage
