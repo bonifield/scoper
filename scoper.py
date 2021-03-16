@@ -1,6 +1,6 @@
-# last updated: 2021-03-01
+# last updated: 2021-03-16
 
-import re
+import json, re
 from urllib.parse import urlparse
 
 class tcol:
@@ -76,7 +76,8 @@ class ScoperList:
 	def json(self):
 		'''json(): a generator object for the results list that yields the result in JSON'''
 		for i in self.output:
-			yield({"scope":"inside", "host":i})
+			y = json.dumps({"scope":"inside", "host":i})
+			yield(y)
 
 	def __repr__(self):
 		'''__repr__(): returns the results list, one item per line (newline-delimited)'''
@@ -153,10 +154,13 @@ class ScoperSingle:
 	def json(self):
 		'''colors(): returns the result in JSON'''
 		cc = self.output.split()
+		status = ""
 		if "inside" in cc[0]:
-			return({"scope":"inside", "host":cc[1]})
+			status = "inside"
 		elif "outside" in cc[0]:
-			return({"scope":"outside", "host":cc[1]})
+			status = "outside"
+		j = json.dumps({"scope":status, "host":cc[1]})
+		return(j)
 
 	def __repr__(self):
 		'''__repr__(): returns the result'''
