@@ -11,7 +11,8 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 - imports and loading the configuration file in your script
 ```
 import json, sys
-from scoper import ScoperList, ScoperSingle
+from scoper.scoper import ScoperList,
+from scoper.scoper import ScoperSingle
 with open(sys.argv[1], "r") as conf:
 	c = json.load(conf)
 conf.close()
