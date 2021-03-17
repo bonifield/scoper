@@ -4,7 +4,7 @@
 #	check-url.py -c test-burp-config.conf -u test-urls.json -m [single|list]
 
 import argparse, json, sys
-from scoper import ScoperList, ScoperSingle
+from scoper.scoper import ScoperList, ScoperSingle
 
 parser = argparse.ArgumentParser(description="provide a Burp config and a file of URLs to check")
 req = parser.add_argument_group("required arguments")
