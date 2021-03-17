@@ -3,9 +3,9 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 
 ## example output
 - colorized terminal output\
-![scoper-output-colorized.png](https://github.com/bonifield/scoper/raw/main/scoper-output-colorized.PNG)
+![scoper-output-colorized.png](https://github.com/bonifield/scoper/raw/main/images/scoper-output-colorized.PNG)
 - JSON output\
-![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/scoper-output-json.PNG)
+![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/images/scoper-output-json.PNG)
 
 ## importing and loading the external Burp-style configuration file
 - imports and loading the configuration file in your script
