@@ -7,15 +7,7 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 - JSON output\
 ![scoper-output-json.png](https://github.com/bonifield/scoper/raw/main/scoper-output-json.PNG)
 
-## usage
-- check-urls.py - quickly parse an input file containing JSON lines (from Amass, Subfinder, custom tooling, etc) against a Burp-style configuration file
-```
-check-urls.py -c test-burp-config.conf -u test-urls.json -p [single|list]
-```
-- use the example script to preview output formats
-```
-test-scoper-examples.py -c test-burp-config.json
-```
+## importing and loading the external Burp-style configuration file
 - imports and loading the configuration file in your script
 ```
 import json, sys
@@ -24,7 +16,7 @@ with open(sys.argv[1], "r") as conf:
 	c = json.load(conf)
 conf.close()
 ```
-- ScoperList: bulk-process a provided Python list "inputUrls" consisting of URLs, which only retrieves "inside-scope"
+- ScoperList: bulk-process a provided Python **list structure "inputUrls" consisting of URLs**, which only retrieves "inside-scope"
 ```
 s = ScoperList(c, inputUrls) # note "c" is the config loaded above
 s.check()
@@ -39,7 +31,7 @@ for x in s.colors():
 for x in s.json():
 	print(x)
 ```
-- ScoperSingle: check a single URL for "inside-scope" or "ouside-scope" status
+- ScoperSingle: check a **single URL string** for "inside-scope" or "ouside-scope" status
 ```
 ss = ScoperSingle(c, "http://test.google.com/admin/stuff") # note "c" is the config loaded above
 ss.check()
@@ -47,7 +39,7 @@ print(ss.output) # single plaintext string
 print(ss.colors()) # single colorized string
 print(ss.json()) # single JSON string
 ```
-- ScoperSingle: loop over a Python list "inputUrls" and process them one at a time for either "inside-scope" or "ouside-scope" status
+- ScoperSingle: loop over a Python **list structure "inputUrls" consisting of URLs** and process them one at a time for either "inside-scope" or "ouside-scope" status
 ```
 for i in inputUrls:
 	sss = ScoperSingle(c, i) # note "c" is the config loaded above
@@ -55,4 +47,14 @@ for i in inputUrls:
 	print(sss.output) # single plaintext string
 	print(sss.colors()) # single colorized string
 	print(ss.json()) # single JSON string
+```
+
+## sample scripts
+- check-urls.py - quickly parse an input file containing JSON lines (from Amass, Subfinder, custom tooling, etc) against a Burp-style configuration file
+```
+check-urls.py -c test-burp-config.conf -u test-urls.json -p [single|list]
+```
+- use the example script to preview output formats
+```
+test-scoper-examples.py -c test-burp-config.json
 ```
