@@ -1,5 +1,5 @@
 # scoper
-test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine scope
+test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine in/out-of-scope status
 
 ## example output
 - colorized terminal output\
