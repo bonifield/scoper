@@ -52,7 +52,7 @@ for i in inputUrls:
 	sss.check()
 	print(sss.output) # single plaintext string
 	print(sss.colors()) # single colorized string
-	print(ss.json()) # single JSON string
+	print(sss.json()) # single JSON string
 ```
 
 ## sample scripts
