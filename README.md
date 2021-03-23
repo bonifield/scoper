@@ -6,6 +6,12 @@ test a single URL, or a list of URLs, against a Burp Suite-style JSON configurat
 pip install scoper
 ```
 
+## example outputs
+- terminal with colors
+[scoper-output-colorized.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-colorized.PNG)
+- JSON
+[scoper-output-json.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-json.PNG)
+
 ## importing and loading the external Burp-style configuration file
 - imports and loading the configuration file in your script
 ```
