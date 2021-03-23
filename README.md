@@ -7,9 +7,9 @@ pip install scoper
 ```
 
 ## example outputs
-- terminal with colors
+### terminal with colors
 ![scoper-output-colorized.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-colorized.PNG)
-- JSON
+### JSON
 ![scoper-output-json.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-json.PNG)
 
 ## importing and loading the external Burp-style configuration file
