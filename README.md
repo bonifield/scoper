@@ -16,9 +16,9 @@ conf.close()
 ```
 #s = ScoperSingle(config="/path/to/config.json", url="http://test.google.com/admin/stuff") # pass in a string path to the config file
 s = ScoperSingle(config=c, url="http://test.google.com/admin/stuff") # note "c" is the config loaded above
-print(s.output)
-print(s.json)
-print(s.color)
+print(s.output) # single dict
+print(s.json) # single JSON string
+print(s.color) # single colorized string
 # if passing in a dict for the config, loop over a list of URLs etc while only opening the config once
 ```
 - loop over multiple URLs "inputUrls" and process them one at a time
@@ -26,10 +26,9 @@ print(s.color)
 for i in inputUrls:
 	#sss = ScoperSingle(config="/path/to/config.json", url="http://test.google.com/admin/stuff") # pass in a string path to the config file
 	sss = ScoperSingle(config=c, url="http://test.google.com/admin/stuff") # note "c" is the config loaded above
-	sss.check()
-	print(sss.output) # single plaintext string
-	print(sss.colors) # single colorized string
+	print(sss.output) # single dict
 	print(sss.json) # single JSON string
+	print(sss.colors) # single colorized string
 ```
 
 ## ScoperList
