@@ -1,7 +1,7 @@
 # scoper
 test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine in/out-of-scope status
 
-## installation
+## installation ([GitHub](https://github.com/bonifield/scoper) / [PyPi](https://pypi.org/project/scoper/))
 ```
 pip install scoper
 ```
@@ -53,6 +53,9 @@ for x in l.json_generator():
 # large colorized string with newline characters for on-screen viewing
 print(l.color)
 ```
+
+## example output
+![example scoper output](https://github.com/bonifield/scoper/raw/main/images/example-scoper-output.PNG)
 
 ### Release Notes
 - v1.1.0
