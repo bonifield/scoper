@@ -1,6 +1,11 @@
 # scoper
 test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine in/out-of-scope status
 
+## installation
+```
+pip install scoper
+```
+
 ## importing and loading the external Burp-style configuration file
 - imports and loading the configuration file in your script
 ```
