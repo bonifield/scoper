@@ -1,168 +1,172 @@
-# last updated: 2021-03-23
+# last updated: 2021-05-27
 
-import json, re
+import json
+import re
+import sys
 from urllib.parse import urlparse
 
 class tcol:
 	'''tcol: contains terminal color codes; always close a colorized string by appending "tcol.RESET"'''
-	PURPLE = '\033[95m'
-	BLUE = '\033[94m'
 	GREEN = '\033[92m'
-	YELLOW = '\033[93m'
 	RED = '\033[91m'
 	RESET = '\033[0m'
 
-class ScoperList:
-	def __init__(self, conf, inputUrls, output=None):
-		'''__init__: provide a Burp configuration and a list of URLs to check'''
-		self.conf = conf
-		self.inputUrls = inputUrls
+class ScoperCore:
+	def __init__(self, config="", url="", urls=[]):
+		'''__init__: provide a Burp configuration and a single URL or list of URLs to check'''
+		self.config = config
+		if type(self.config).__name__ == "str": # if provided a path to the burp config
+			with open(self.config, "r") as cnf:
+				self.conf = json.load(cnf)
+			cnf.close()
+		elif type(self.config).__name__ == "dict": # if directly provided the burp config as a dict
+				self.conf = self.config
+		self.url = url # provided string
+		self.urls = urls # provided list
 
-	def processIncludes(self, conf, inputUrls):
-		'''processIncludes(): checks provided URLs against the "include" section of the Burp configuration file; returns a list of URLs to include, as a subset of the original input list'''
-		includeUrls = []
-		for i in inputUrls:
-			u = urlparse(i).netloc # domain portion of URL
-			if "http://" in i:
-				h = "http"
-			if "https://" in i:
-				h = "https"
-			for x in conf["target"]["scope"]["include"]:
-				if x["protocol"] == h:
-					y = re.match(x["host"], u, re.DOTALL)
-					if y:
-						includeUrls.append(i)
-		return(list(set(includeUrls)))
-
-	def processExcludes(self, conf, includeUrls):
-		'''processExcludes(): checks provided URLs against the "exclude" section of the Burp configuration file; returns a list of URLs to exclude, as a subset of the original input list'''
-		excludeUrls = []
-		for i in includeUrls:
-			u = urlparse(i).netloc # domain portion of URL
-			p = urlparse(i).path # path portion of URL
-			if len(p) == 0:
-				p = "/"
-			if "http://" in i:
-				h = "http"
-			if "https://" in i:
-				h = "https"
-			for x in conf["target"]["scope"]["exclude"]:
-				if x["protocol"] == h:
-					y = re.match(x["host"], u, re.DOTALL)
-					z = re.match(x["file"], p, re.DOTALL)
-					if y:
-						if z:
-							excludeUrls.append(i)
-		return(list(set(excludeUrls)))
-
-	def check(self):
-		'''check(): subtracts the excludel list from the include list to drop any conflicting items; returns a final list of only in-scope items'''
-		i = self.processIncludes(self.conf, self.inputUrls)
-		e = self.processExcludes(self.conf, i)
-		o = list(set(i) - set(e))
-		self.output = o
-		return(o)
-
-	def gen(self):
-		'''gen(): a generator object for the results list, accessible after Scoper.check() has been run'''
-		for i in self.output:
-			yield(i)
-
-	def colors(self):
-		'''colors(): a generator object for the results list that yields the result with colorized strings'''
-		for i in self.output:
-			yield(tcol.GREEN+"inside-scope"+tcol.RESET+"\t"+i)
-
-	def json(self):
-		'''json(): a generator object for the results list that yields the result in JSON'''
-		for i in self.output:
-			y = json.dumps({"scope":"inside", "host":i})
-			yield(y)
-
-	def __repr__(self):
-		'''__repr__(): returns the results list, one item per line (newline-delimited)'''
-		o = self.check()
-		self.output = o
-		return("\n".join(o))
-
-class ScoperSingle:
-	def __init__(self, conf, inputUrl, output=""):
-		'''__init__: provide a Burp configuration and a single URL to check'''
-		self.conf = conf
-		self.inputUrl = inputUrl
-		self.output = ""
-
-	def processIncludes(self, conf, inputUrl):
-		'''processIncludes(): checks provided URL against the "include" section of the Burp configuration file; returns a the same URL if it meets the include criteria, otherwise it returns an empty string'''
-		inputUrl = inputUrl.strip()
-		includeUrl = ""
-		u = urlparse(inputUrl).netloc # domain portion of URL
-		if "http://" in inputUrl:
-			h = "http"
-		if "https://" in inputUrl:
-			h = "https"
-		for x in conf["target"]["scope"]["include"]:
-			if x["protocol"] == h:
-				y = re.match(x["host"], u, re.DOTALL)
-				if y:
-					includeUrl = inputUrl
-		return(includeUrl)
-
-	def processExcludes(self, conf, includeUrl):
-		'''processExcludes(): checks provided URL against the "exclude" section of the Burp configuration file; returns a the same URL if it meets the exclude criteria, otherwise it returns an empty string'''
-		includeUrl = includeUrl.strip()
-		excludeUrl = ""
-		u = urlparse(includeUrl).netloc # domain portion of URL
-		p = urlparse(includeUrl).path # path portion of URL
+	def processUrl(self, conf, clude, url):
+		'''processUrl(): checks provided URL against the "include" and "exclude" sections of the Burp configuration file; returns the same URL if it meets the criteria, otherwise it returns an empty string'''
+		url = url.strip()
+		urlp = urlparse(url)
+		u = urlp.netloc # domain portion of URL
+		if urlp.port:
+			u = u.split(":")[0]
+			pt = str(urlp.port) # port is checked as a regex string in the Burp config
+		else:
+			if "http://" in url:
+				pt = "80"
+			elif "https://" in url:
+				pt = "443"
+		p = urlp.path # path portion of URL
+		s = urlp.scheme # http/https portion of URL
 		if len(p) == 0:
 			p = "/"
-		if "http://" in includeUrl:
-			h = "http"
-		if "https://" in includeUrl:
-			h = "https"
-		for x in conf["target"]["scope"]["exclude"]:
-			if x["protocol"] == h:
-				y = re.match(x["host"], u, re.DOTALL)
-				z = re.match(x["file"], p, re.DOTALL)
-				if y:
-					if z:
-						excludeUrl = includeUrl
-		return(excludeUrl)
-
-	def check(self):
-		'''check(): compares the input URL to the include/exclude logic, and determins if the URL is in scope or not'''
-		i = self.processIncludes(self.conf, self.inputUrl)
-		if len(i) > 0:
-			e = self.processExcludes(self.conf, i)
-			if i != e:
-				self.output = "inside-scope\t"+i
-			else:
-				self.output = "outside-scope\t"+i
-			return(self.output)
-		else:
-			self.output = "outside-scope\t"+self.inputUrl
-		return(self.output)
-
-	def colors(self):
-		'''colors(): returns the result with colorized output'''
-		cc = self.output.split()
-		if "inside" in self.output:
-			return(tcol.GREEN+cc[0]+tcol.RESET+"\t"+cc[1])
-		elif "outside" in self.output:
-			return(tcol.RED+cc[0]+tcol.RESET+"\t"+cc[1])
-
-	def json(self):
-		'''colors(): returns the result in JSON'''
-		cc = self.output.split()
-		status = ""
-		if "inside" in cc[0]:
-			status = "inside"
-		elif "outside" in cc[0]:
-			status = "outside"
-		j = json.dumps({"scope":status, "host":cc[1]})
-		return(j)
+		if len(s) == 0:
+			s = "https" # default to HTTPS
+		if clude in conf["target"]["scope"]:
+			for x in conf["target"]["scope"][clude]:
+				#
+				#
+				# track a pass/fail score; unanimous assessment required for result
+				score = []
+				if "protocol" in x:
+					if x["protocol"] != s:
+						#print("FAILED PROTOCOL CHECK:", clude, s, "requires:", x["protocol"], "\t\t\t\turl:", url)
+						#return("")
+						score.append("fail")
+					else:
+						score.append("pass")
+				if "host" in x:
+					if not re.match(x["host"], u, re.DOTALL):
+						#print("FAILED HOST CHECK:", clude, u, "requires:", x["host"], "\turl:", url)
+						#return("")
+						score.append("fail")
+					else:
+						score.append("pass")
+				if "file" in x: # burp file = url path
+					if not re.match(x["file"], p, re.DOTALL):
+						#print("FAILED FILE CHECK:", clude, p, "requires:", x["file"], "\t\t\turl:", url)
+						#return("")
+						score.append("fail")
+					else:
+						score.append("pass")
+				if "port" in x:
+					if not re.match(x["port"], pt, re.DOTALL):
+						#print("FAILED PORT CHECK:", clude, pt, "requires:", x["port"], "\t\t\t\t\turl:", url)
+						#return("")
+						score.append("fail")
+					else:
+						score.append("pass")
+				#
+				#
+				# check the score
+				#
+				# include pass = is included
+				# include fail = is not included (so "not" this condition / all passes = hit)
+				# exclude fail = is included (so "not" this condition / all passes = hit)
+				# exclude pass = is not included
+				#
+				if "fail" not in score:
+					return(url)
+				else:
+					pass
+		return("") # pending all checks and no results, fail closed
 
 	def __repr__(self):
 		'''__repr__(): returns the result'''
-		self.check()
 		return(self.output)
+
+class ScoperSingle(ScoperCore):
+	def __init__(self, config="", url="", urls=[]):
+		'''__init__: initialize variables to check a single URLs'''
+		super().__init__(config, url, urls) # inherit from ScoperCore
+		self.output = {}
+		self.check() # populates self.output
+		self.json = json.dumps(self.output)
+		self.color() # sets self.color
+
+	def check(self):
+		'''check(): compares the input URL to the include/exclude logic, and determines if the URL is in scope or not'''
+		i = self.processUrl(self.conf, "include", self.url)
+		if len(i) > 0:
+			e = self.processUrl(self.conf, "exclude", i)
+			if i != e:
+				self.output = {'scope':'inside', 'url':i}
+			else:
+				self.output = {'scope':'outside', 'url':i}
+		else:
+			self.output = {'scope':'outside', 'url':self.url} # default to outside as a precaution
+
+	def color(self):
+		'''color(): sets self.color as a colorized string representation of self.output'''
+		if "scope" in self.output:
+			if self.output["scope"] == "inside":
+				self.color = str(tcol.GREEN+"scope-inside"+tcol.RESET+"\t"+self.output["url"])
+			if self.output["scope"] == "outside":
+				self.color = str(tcol.RED+"scope-outside"+tcol.RESET+"\t"+self.output["url"])
+
+class ScoperList(ScoperCore):
+	def __init__(self, config="", url="", urls=[]):
+		'''__init__: initialize variables to check a list of URLs'''
+		super().__init__(config, url, urls) # inherit from ScoperCore
+		self.output = {'scope':{'inside':[], 'outside':[]}}
+		self.check() # populates self.output
+		self.json = json.dumps(self.output)
+		self.color = self.color()
+
+	def check(self):
+		'''check(): compares the input URL to the include/exclude logic, and determines if the URL is in scope or not'''
+		for url in self.urls:
+			i = self.processUrl(self.conf, "include", url)
+			if len(i) > 0:
+				e = self.processUrl(self.conf, "exclude", i)
+				if i != e:
+					self.output['scope']['inside'].append(i)
+				else:
+					self.output['scope']['outside'].append(i)
+			else:
+				self.output['scope']['outside'].append(url) # default to outside as a precaution
+
+	def color(self):
+		'''color(): sets self.color as a colorized string representation of self.output'''
+		cc = ""
+		for i in self.output['scope']['inside']:
+			cc += str(tcol.GREEN+"scope-inside"+tcol.RESET+"\t"+i+"\n")
+		for i in self.output['scope']['outside']:
+			cc += str(tcol.RED+"scope-outside"+tcol.RESET+"\t"+i+"\n")
+		return(cc)
+
+	def output_generator(self):
+		'''output_generator(): this generator function produces output similar to ScoperSingle, ex. {'scope':'inside', 'url':'xyz'} for sake of consistency'''
+		t = []
+		for i in self.output['scope']['inside']:
+			t.append({'scope':'inside', 'url':i})
+		for i in self.output['scope']['outside']:
+			t.append({'scope':'outside', 'url':i})
+		for x in t:
+			yield(x)
+
+	def json_generator(self):
+		'''json_generator(): generator function uses output_generator() to dump JSON strings like ScoperSingle, ex. {"scope":"inside", "url":"xyz"} for sake of consistency'''
+		for i in self.output_generator():
+			yield(json.dumps(i))

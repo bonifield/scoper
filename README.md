@@ -1,17 +1,6 @@
 # scoper
 test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine in/out-of-scope status
 
-## installation
-```
-pip install scoper
-```
-
-## example outputs
-### terminal with colors
-![scoper-output-colorized.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-colorized.PNG)
-### JSON
-![scoper-output-json.PNG](https://github.com/bonifield/scoper/raw/main/images/scoper-output-json.PNG)
-
 ## importing and loading the external Burp-style configuration file
 - imports and loading the configuration file in your script
 ```
@@ -21,30 +10,18 @@ with open("test-burp-config.json", "r") as conf:
 	c = json.load(conf)
 conf.close()
 ```
-- ScoperList: bulk-process a provided Python **list structure "inputUrls" consisting of URLs**, which only retrieves "inside-scope"
+
+## ScoperSingle
+- check a single URL (provide a string)
 ```
-s = ScoperList(c, inputUrls) # note "c" is the config loaded above
-s.check()
-print(s.output) # list object
-# generator, plain strings
-for x in s.gen():
-	print(x)
-# generator, colorized strings for on-screen viewing
-for x in s.colors():
-	print(x)
-# generator, JSON strings for on-screen viewing
-for x in s.json():
-	print(x)
+#s = ScoperSingle(config="/path/to/config.json", url="http://test.google.com/admin/stuff") # pass in a string path to the config file
+s = ScoperSingle(config=c, url="http://test.google.com/admin/stuff") # note "c" is the config loaded above
+print(s.output)
+print(s.json)
+print(s.color)
+# if passing in a dict for the config, loop over a list of URLs etc while only opening the config once
 ```
-- ScoperSingle: check a **single URL string** for "inside-scope" or "ouside-scope" status
-```
-ss = ScoperSingle(c, "http://test.google.com/admin/stuff") # note "c" is the config loaded above
-ss.check()
-print(ss.output) # single plaintext string 
-print(ss.colors()) # single colorized string
-print(ss.json()) # single JSON string
-```
-- ScoperSingle: loop over a Python **list structure "inputUrls" consisting of URLs** and process them one at a time for either "inside-scope" or "ouside-scope" status
+- loop over multiple URLs "inputUrls" and process them one at a time
 ```
 for i in inputUrls:
 	sss = ScoperSingle(c, i) # note "c" is the config loaded above
@@ -54,7 +31,29 @@ for i in inputUrls:
 	print(sss.json()) # single JSON string
 ```
 
+## Scoper List
+- bulk-process multiple URLs (provide a list)
+```
+l = ScoperList(config=c, urls=inputUrls) # note "c" is the config loaded above, inputUrls is a list object
+# dict object, NOT the same format as ScoperSingle
+print(l.output)
+# JSON object, NOT the same format as ScoperSingle
+print(l.json)
+# generator, dict output in the SAME format as ScoperSingle
+for x in l.output_generator():
+	print(x)
+# generator, JSON output in the SAME format as ScoperSingle
+for x in l.json_generator():
+	print(x)
+# large colorized string with newline characters for on-screen viewing
+print(l.color)
+```
+
 ### Release Notes
+- v1.1.0
+	- major overhaul to streamline code
+	- made output functions in ScoperList into generators
+	- fixed some logic that determines inside/outside of scope
 - v1.0.21
 	- simplified import structure
 	- minor typo fixes

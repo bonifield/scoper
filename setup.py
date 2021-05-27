@@ -6,7 +6,7 @@ long_description = (here / 'README.md').read_text(encoding='utf-8')
 
 setup(
 	name='scoper',
-	version='1.0.21',
+	version='1.1.0',
 	author='James Bonifield',
 	author_email='bonifield.tools@gmail.com',
 	description='test a single URL, or a list of URLs, against a Burp Suite-style JSON configuration file to determine in/out-of-scope status',
