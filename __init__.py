@@ -1,1 +1,1 @@
-from scoper import Scoper
+from scoper import ScoperList, ScoperSingle
