@@ -24,14 +24,15 @@ print(s.color)
 - loop over multiple URLs "inputUrls" and process them one at a time
 ```
 for i in inputUrls:
-	sss = ScoperSingle(c, i) # note "c" is the config loaded above
+	#sss = ScoperSingle(config="/path/to/config.json", url="http://test.google.com/admin/stuff") # pass in a string path to the config file
+	sss = ScoperSingle(config=c, url="http://test.google.com/admin/stuff") # note "c" is the config loaded above
 	sss.check()
 	print(sss.output) # single plaintext string
-	print(sss.colors()) # single colorized string
-	print(sss.json()) # single JSON string
+	print(sss.colors) # single colorized string
+	print(sss.json) # single JSON string
 ```
 
-## Scoper List
+## ScoperList
 - bulk-process multiple URLs (provide a list)
 ```
 l = ScoperList(config=c, urls=inputUrls) # note "c" is the config loaded above, inputUrls is a list object
